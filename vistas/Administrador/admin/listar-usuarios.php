@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/../models/Usuario.php');
+require_once(__DIR__ . '/../../../models/Usuario.php');
 
 $usuario = new Usuario();
 $lista = $usuario->listar();
@@ -35,6 +35,9 @@ $lista = $usuario->listar();
 <body>
     <h1>Usuarios registrados</h1>
 
+    <a href="crear-usuario.php">Crear nuevo usuario</a>
+<br><br>
+
     <?php if (empty($lista)) : ?>
         <p>No hay usuarios cargados.</p>
     <?php else : ?>
@@ -44,14 +47,31 @@ $lista = $usuario->listar();
                 <th>Email</th>
                 <th>Fecha de registro</th>
                 <th>Estado</th>
+                <th>Acciones</th>
             </tr>
             <?php foreach ($lista as $fila): ?>
                 <tr>
-                    <td><?php echo $fila['id_usuario']; ?></td>
-                    <td><?php echo $fila['email']; ?></td>
-                    <td><?php echo $fila['fecha_registro']; ?></td>
-                    <td><?php echo $fila['id_estado']; ?></td>
-                </tr>
+    <td><?php echo $fila['id_usuario']; ?></td>
+    <td><?php echo $fila['email']; ?></td>
+    <td><?php echo $fila['fecha_registro']; ?></td>
+    <td><?php echo $fila['id_estado']; ?></td>
+    <td>
+        <a href="eliminar-usuario.php?id=<?php echo $fila['id_usuario']; ?>" 
+           onclick="return confirm('¿Seguro que querés eliminar este usuario?');">
+            Eliminar
+        </a>
+    </td>
+    <td>
+    <a href="editar-usuario.php?id=<?php echo $fila['id_usuario']; ?>">Editar</a>
+    |
+    <a href="eliminar-usuario.php?id=<?php echo $fila['id_usuario']; ?>"
+       onclick="return confirm('¿Seguro que querés eliminar este usuario?');">
+        Eliminar
+    </a>
+</td>
+
+</tr>
+
             <?php endforeach; ?>
         </table>
     <?php endif; ?>

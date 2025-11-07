@@ -65,5 +65,98 @@ class Usuario {
     return $usuarios;
 }
 
+public function actualizar($id, $nuevoEmail, $nuevaContrasena, $nuevoEstado) {
+    $db = new Connection();
+    $conn = $db->getConnection();
+
+    $sql = "UPDATE usuario 
+            SET email = ?, `contraseña` = ?, id_estado = ? 
+            WHERE id_usuario = ?";
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        echo "Error al preparar la consulta: " . $conn->error;
+        $conn->close();
+        return false;
+    }
+
+    $stmt->bind_param("ssii", $nuevoEmail, $nuevaContrasena, $nuevoEstado, $id);
+    $ok = $stmt->execute();
+
+    if ($ok) {
+        echo "Usuario actualizado correctamente.";
+    } else {
+        echo "Error al actualizar el usuario.";
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    return $ok;
+}
+
+public function eliminar($id) {
+    $db = new Connection();
+    $conn = $db->getConnection();
+
+    $sql = "DELETE FROM usuario WHERE id_usuario = ?";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        echo "Error al preparar la consulta: " . $conn->error;
+        $conn->close();
+        return false;
+    }
+
+    $stmt->bind_param("i", $id);
+    $ok = $stmt->execute();
+
+    if ($ok) {
+        echo "Usuario eliminado.";
+    } else {
+        echo "Error al eliminar usuario: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    return $ok;
+}
+
+public function obtenerPorId($id) {
+    $db = new Connection();
+    $conn = $db->getConnection();
+
+    $sql = "SELECT id_usuario, email, `contraseña`, id_estado 
+            FROM usuario 
+            WHERE id_usuario = ?";
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        $conn->close();
+        return null;
+    }
+
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    $res = $stmt->get_result();
+    $fila = $res->fetch_assoc();
+
+    $stmt->close();
+    $conn->close();
+
+    if ($fila) {
+        return $fila;
+    } else {
+        return null;
+    }
+}
+
+
+
+
 }
 
