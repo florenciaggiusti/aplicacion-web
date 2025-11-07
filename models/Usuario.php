@@ -45,4 +45,25 @@ class Usuario {
         $conn->close();
         return $ok;
     }
+
+    public function listar() {
+    $db = new Connection();
+    $conn = $db->getConnection();
+
+    $sql = "SELECT id_usuario, email, fecha_registro, id_estado FROM usuario ORDER BY id_usuario DESC";
+    $res = $conn->query($sql);
+
+    $usuarios = [];
+    if ($res) {
+        while ($fila = $res->fetch_assoc()) {
+            $usuarios[] = $fila;
+        }
+        $res->free();
+    }
+
+    $conn->close();
+    return $usuarios;
 }
+
+}
+
